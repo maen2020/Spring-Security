@@ -13,7 +13,7 @@ public class CustomerController {
         return "Hello World!";
     }
 
-    @GetMapping("index2")
+    @GetMapping("/index2")
     public String index2(){
         return "Hello World Not SECURED!";
     }

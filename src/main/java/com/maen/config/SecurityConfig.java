@@ -61,6 +61,16 @@ public class SecurityConfig {
                     .successHandler(successHandler()) //Url a donde se va a dirigir despues de iniciar sesion.
                     .permitAll()
                 .and()
+                .sessionManagement() //Comporatmiento de las sesiones.
+                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) //Definir politica de creacion de sesion.
+                    .invalidSessionUrl("/login")
+                    .maximumSessions(1) //Sesiones que puede tener el usuario abiertas simultaneamente.
+                    .expiredUrl("/login")
+                    .sessionRegistry(sessionRegistry()) //Obtener los datos de la sesion
+                .and()
+                .sessionFixation()
+                    .migrateSession() //Crea una nueva sesion, sin perder informacion de la sesion actual.
+                .and()
                 .build();
     }
 
@@ -69,7 +79,15 @@ public class SecurityConfig {
      */
     public AuthenticationSuccessHandler successHandler(){
         return ((request, response, authentication) -> {
-            response.sendRedirect("/v1/index");
+            response.sendRedirect("/v1/session");
         });
+    }
+
+    /**
+     * Metodo para obtener los datos de la sesion iniciada o usuario autenticado.
+     */
+    @Bean
+    public SessionRegistry sessionRegistry(){
+        return new SessionRegistryImpl();
     }
 }
